@@ -1,0 +1,26 @@
+wordpress:
+  image: wordpress:fpm
+  volumes:
+    - ./var/www/volumes/db-conf:/etc/mysql/conf.d/my.cnf
+    - ./var/www/volumes/db:/var/lib/mysql
+  links:
+    - db:mysql
+nginx:
+  image: raulr/nginx-wordpress
+  links:
+   - wordpress
+  volumes_from:
+   - wordpress
+  ports:
+   - "8080:80"
+  environment:
+    POST_MAX_SIZE: 128m
+db:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: example
+  ports:
+    - 3306:3306
+  volumes:
+    - ./var/www/volumes/db-conf:/etc/mysql/conf.d/my.cnf
+    - ./var/www/volumes/db:/var/lib/mysql
